@@ -1,18 +1,11 @@
 package ru.job4j.chat.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import ru.job4j.chat.model.Message;
-import ru.job4j.chat.model.Person;
 import ru.job4j.chat.model.Room;
 import ru.job4j.chat.services.MessageServices;
 import ru.job4j.chat.services.RoomServices;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -22,25 +15,9 @@ public class MessageController {
     private final MessageServices messages;
     private final RoomServices rooms;
 
-    private static final String API = "http://localhost:8080/chat/persons/in/";
-
-    private static final String API_ROOM
-            = "http://localhost:8080/chat/room/get/{name}";
-    @Autowired
-    private RestTemplate rest;
-
     public MessageController(MessageServices messages, RoomServices rooms) {
         this.messages = messages;
         this.rooms = rooms;
-    }
-
-    @GetMapping("/room/{room}/people")
-    public List<Person> findAllPeople(@PathVariable("room") String name) {
-        ResponseEntity<List<Person>> responseEntity =
-                rest.exchange(API + name,
-                        HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-                        });
-        return responseEntity.getBody();
     }
 
     /**
@@ -51,9 +28,7 @@ public class MessageController {
      */
     @GetMapping("/room/{room}")
     public List<Message> findAll(@PathVariable("room") String name) {
-        Room room = rest.getForEntity(API_ROOM,
-                Room.class,
-                name).getBody();
+        Room room = rooms.findByName(name).get();
         return messages.findAllByRoom(room);
     }
 
@@ -89,7 +64,7 @@ public class MessageController {
      * @return ok
      */
     @DeleteMapping("/room/{name}/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id, @PathVariable String name) {
         this.messages.delete(id);
         return ResponseEntity.ok().build();
     }

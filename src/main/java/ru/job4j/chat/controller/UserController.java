@@ -1,37 +1,37 @@
-/*
 package ru.job4j.chat.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.job4j.chat.model.Person;
-import ru.job4j.chat.store.PersonRepository;
+import ru.job4j.chat.services.PersonServices;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-*/
-/*@RestController
-@RequestMapping("/chat/users")*//*
-
+@RestController
+@RequestMapping("/chat/persons")
 public class UserController {
-    private PersonRepository users;
-    private BCryptPasswordEncoder encoder;
+    private final PersonServices users;
+    private final BCryptPasswordEncoder encoder;
 
-    public UserController(PersonRepository users,
-                          BCryptPasswordEncoder encoder) {
+    public UserController(PersonServices users, BCryptPasswordEncoder encoder) {
         this.users = users;
         this.encoder = encoder;
     }
 
+    /**
+     * Создает пользователя. Если роль не задана, то присвается роль с айди 1 (weak_user).
+     * Кодирует пароль.
+     * @param person тело пользователя.
+     * @return ResponseEntity<Person>
+     */
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody Person person) {
+    public ResponseEntity<Person> signUp(@RequestBody Person person) {
         person.setPassword(encoder.encode(person.getPassword()));
-        users.save(person);
-    }
-
-    @GetMapping("/all")
-    public List<Person> findAll() {
-        return (List<Person>) users.findAll();
+        return new ResponseEntity<>(
+                this.users.save(person),
+                HttpStatus.CREATED
+        );
     }
 }
 
-*/

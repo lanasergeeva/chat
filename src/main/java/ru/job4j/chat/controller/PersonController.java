@@ -24,7 +24,7 @@ public class PersonController {
         return persons.findAll();
     }
 
-    @GetMapping("/persons/in/{room}")
+    @GetMapping("/room/{room}/people")
     public List<Person> findAllPeople(@PathVariable("room") String name) {
         return persons.findAllPeople(name);
     }
@@ -35,20 +35,6 @@ public class PersonController {
         return new ResponseEntity<>(
                 person.orElse(new Person()),
                 person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
-    }
-
-    /**
-     * Создает пользователя. Если роль не задана, то присвается роль с айди 1 (weak_user).
-     *
-     * @param person тело пользователя.
-     * @return ResponseEntity<Person>
-     */
-    @PostMapping("/persons")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
-        return new ResponseEntity<>(
-                this.persons.save(person),
-                HttpStatus.CREATED
         );
     }
 
