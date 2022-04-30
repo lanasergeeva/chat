@@ -30,4 +30,14 @@ public class RoleServices {
     public void delete(int id) {
         roles.delete(findById(id).get());
     }
+
+    public void checkData(Role role) {
+        String name = role.getName();
+        if (name == null) {
+            throw new NullPointerException("Name of role mustn't be empty");
+        }
+        if (name.length() < 5) {
+            throw new IllegalArgumentException("Length must be more then 5");
+        }
+    }
 }

@@ -22,11 +22,13 @@ public class UserController {
     /**
      * Создает пользователя. Если роль не задана, то присвается роль с айди 1 (weak_user).
      * Кодирует пароль.
+     *
      * @param person тело пользователя.
      * @return ResponseEntity<Person>
      */
     @PostMapping("/sign-up")
     public ResponseEntity<Person> signUp(@RequestBody Person person) {
+        users.check(person);
         person.setPassword(encoder.encode(person.getPassword()));
         return new ResponseEntity<>(
                 this.users.save(person),

@@ -47,4 +47,15 @@ public class PersonServices {
         return persons.findAllByRoomName(room);
     }
 
+    public void check(Person person) {
+        String login = person.getLogin();
+        String password = person.getPassword();
+        if (login == null || password == null) {
+            throw new NullPointerException("Login and password mustn't be empty");
+        }
+        if (password.length() < 3) {
+            throw new IllegalArgumentException("Length of password must be more then 3");
+        }
+    }
+
 }

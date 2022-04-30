@@ -4,6 +4,7 @@ package ru.job4j.chat.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.services.PersonServices;
 
@@ -31,21 +32,26 @@ public class PersonController {
 
     @GetMapping("/persons/{id}")
     public ResponseEntity<Person> findById(@PathVariable int id) {
-        var person = this.persons.findById(id);
-        return new ResponseEntity<>(
-                person.orElse(new Person()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        return persons.findById(id)
+                .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Person with id %d not found", id)));
+
     }
 
     @PutMapping("/persons")
     public ResponseEntity<Void> update(@RequestBody Person person) {
+        persons.check(person);
         this.persons.save(person);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/persons/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
+        if (persons.findById(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("Person with id %d not found", id));
+        }
         this.persons.delete(id);
         return ResponseEntity.ok().build();
     }
