@@ -39,19 +39,17 @@ public class MessageController {
         this.objectMapper = objectMapper;
     }
 
-    /**
-     * Выводит все сообщения из выбранного чата
-     *
-     * @param name название команты
-     * @return все сообщения в комнате.
-     */
     @GetMapping("/room/{room}")
-    public List<Message> findAll(@PathVariable("room") String name) {
+    public ResponseEntity<List<Message>> findAll(@PathVariable("room") String name) {
         if (rooms.findByName(name).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     String.format("Room with name %s not found", name));
         }
-        return messages.findAllByRoom(rooms.findByName(name).get());
+        List<Message> rsl = messages.findAllByRoom(rooms.findByName(name).get());
+        return new ResponseEntity<>(
+                rsl,
+                HttpStatus.OK
+        );
     }
 
     /**
