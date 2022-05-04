@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RoleServices {
+public class RoleServices implements Services<Role> {
     private final RoleRepository roles;
 
     public RoleServices(RoleRepository roles) {

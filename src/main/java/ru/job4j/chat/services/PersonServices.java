@@ -6,11 +6,12 @@ import ru.job4j.chat.model.Role;
 import ru.job4j.chat.store.PersonRepository;
 import ru.job4j.chat.store.RoleRepository;
 
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PersonServices {
+public class PersonServices implements Services<Person> {
     private final PersonRepository persons;
     private final RoleRepository roles;
 

@@ -5,11 +5,12 @@ import ru.job4j.chat.model.Message;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.model.Room;
 import ru.job4j.chat.store.MessageRepository;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MessageServices {
+public class MessageServices implements Services<Message> {
     private final MessageRepository messages;
     private final PersonServices persons;
 
@@ -18,20 +19,28 @@ public class MessageServices {
         this.persons = persons;
     }
 
+    @Override
     public List<Message> findAll() {
         return (List<Message>) messages.findAll();
+    }
+
+    @Override
+    public Message save(Message message) {
+        return messages.save(message);
     }
 
     public Message save(Message message, String name) {
         Person byLogin = persons.findByLogin(name);
         message.setPerson(byLogin);
-        return messages.save(message);
+        return save(message);
     }
 
+    @Override
     public Optional<Message> findById(int id) {
         return messages.findById(id);
     }
 
+    @Override
     public void delete(int id) {
         messages.delete(findById(id).get());
     }

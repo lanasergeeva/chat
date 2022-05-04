@@ -3,8 +3,6 @@ package ru.job4j.chat.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.model.Room;
 import ru.job4j.chat.services.RoomServices;
@@ -83,5 +81,14 @@ public class RoomController {
         Room room = byName.get();
         this.rooms.delete(room.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("admin/room")
+    public ResponseEntity<Room> patch(@RequestBody Room room)
+            throws Throwable {
+        return new ResponseEntity<>(
+                rooms.patch(room, room.getId(), rooms),
+                HttpStatus.OK
+        );
     }
 }

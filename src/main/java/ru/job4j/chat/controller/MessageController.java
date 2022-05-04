@@ -113,4 +113,13 @@ public class MessageController {
         }));
         LOGGER.error(e.getLocalizedMessage());
     }
+
+    @PatchMapping("/room/message")
+    public ResponseEntity<Message> patch(@RequestBody Message message)
+            throws Throwable {
+        return new ResponseEntity<>(
+                messages.patch(message, message.getId(), messages),
+                HttpStatus.OK
+        );
+    }
 }

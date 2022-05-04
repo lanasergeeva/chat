@@ -57,4 +57,13 @@ public class RoleController {
         this.roles.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/role")
+    public ResponseEntity<Role> patch(@RequestBody Role role)
+            throws Throwable {
+        return new ResponseEntity<>(
+                roles.patch(role, role.getId(), roles),
+                HttpStatus.OK
+        );
+    }
 }

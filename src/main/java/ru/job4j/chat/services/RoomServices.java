@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RoomServices {
+public class RoomServices implements Services<Room> {
     private final RoomRepository rooms;
 
     public RoomServices(RoomRepository rooms) {
@@ -34,4 +34,5 @@ public class RoomServices {
     public Optional<Room> findByName(String name) {
         return rooms.findOneByName(name);
     }
+
 }

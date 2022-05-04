@@ -1,6 +1,5 @@
 package ru.job4j.chat.controller;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +53,14 @@ public class PersonController {
         }
         this.persons.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/persons")
+    public ResponseEntity<Person> patch(@RequestBody Person person)
+            throws Throwable {
+        return new ResponseEntity<>(
+                persons.patch(person, person.getId(), persons),
+                HttpStatus.OK
+        );
     }
 }
