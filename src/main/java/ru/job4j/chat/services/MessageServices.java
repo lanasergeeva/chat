@@ -48,5 +48,13 @@ public class MessageServices implements Services<Message> {
     public List<Message> findAllByRoom(Room room) {
         return messages.findAllByRoom(room);
     }
+
+    @Override
+    public void check(Message message) {
+        String text = message.getText();
+        if (text == null || text.length() < 2) {
+            throw new IllegalArgumentException("Text mustn't be null and length must be  more then 2");
+        }
+    }
 }
 

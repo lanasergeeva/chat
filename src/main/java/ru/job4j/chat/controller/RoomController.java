@@ -2,8 +2,10 @@ package ru.job4j.chat.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.chat.handler.Operation;
 import ru.job4j.chat.model.Room;
 import ru.job4j.chat.services.RoomServices;
 
@@ -51,14 +53,8 @@ public class RoomController {
      * @return созданный Room.
      */
     @PostMapping("admin/room")
-    public ResponseEntity<Room> create(@RequestBody Room room) {
-        String name = room.getName();
-        if (name == null) {
-            throw new NullPointerException("Name of room mustn't be empty");
-        }
-        if (name.length() < 5) {
-            throw new IllegalArgumentException("Length must be more then 5");
-        }
+    public ResponseEntity<Room> create(@Validated(Operation.OnCreate.class)
+                                       @RequestBody Room room) {
         return new ResponseEntity<>(
                 this.rooms.save(room),
                 HttpStatus.CREATED
@@ -84,7 +80,8 @@ public class RoomController {
     }
 
     @PatchMapping("admin/room")
-    public ResponseEntity<Room> patch(@RequestBody Room room)
+    public ResponseEntity<Room> patch(@Validated(Operation.OnUpdate.class)
+                                          @RequestBody Room room)
             throws Throwable {
         return new ResponseEntity<>(
                 rooms.patch(room, room.getId(), rooms),

@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.auth.IAuthenticationFacade;
+import ru.job4j.chat.handler.Operation;
 import ru.job4j.chat.model.Message;
 import ru.job4j.chat.model.Room;
 import ru.job4j.chat.services.MessageServices;
@@ -53,7 +55,6 @@ public class MessageController {
     }
 
     /**
-     * \
      * Метод добавляет сообщение в чат.
      *
      * @param username Имя пользователя
@@ -63,9 +64,9 @@ public class MessageController {
      */
     @PostMapping("/room/{nameroom}/{username}/reply")
     public ResponseEntity<Message> create(
+            @Validated(Operation.OnCreate.class) @RequestBody Message message,
             @PathVariable("username") String username,
-            @PathVariable("nameroom") String nameroom,
-            @RequestBody Message message) {
+            @PathVariable("nameroom") String nameroom) {
         checkUsername(username);
         Optional<Room> byName = rooms.findByName(nameroom);
         if (byName.isEmpty()) {
@@ -115,7 +116,8 @@ public class MessageController {
     }
 
     @PatchMapping("/room/message")
-    public ResponseEntity<Message> patch(@RequestBody Message message)
+    public ResponseEntity<Message> patch(@Validated(Operation.OnUpdate.class)
+                                         @RequestBody Message message)
             throws Throwable {
         return new ResponseEntity<>(
                 messages.patch(message, message.getId(), messages),

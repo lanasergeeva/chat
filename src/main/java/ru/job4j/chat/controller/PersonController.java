@@ -2,8 +2,10 @@ package ru.job4j.chat.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.chat.handler.Operation;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.services.PersonServices;
 
@@ -39,8 +41,8 @@ public class PersonController {
     }
 
     @PutMapping("/persons")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
-        persons.check(person);
+    public ResponseEntity<Void> update(@Validated(Operation.OnUpdate.class)
+                                           @RequestBody Person person) {
         this.persons.save(person);
         return ResponseEntity.ok().build();
     }
@@ -56,7 +58,7 @@ public class PersonController {
     }
 
     @PatchMapping("/persons")
-    public ResponseEntity<Person> patch(@RequestBody Person person)
+    public ResponseEntity<Person> patch(@Validated(Operation.OnUpdate.class) @RequestBody Person person)
             throws Throwable {
         return new ResponseEntity<>(
                 persons.patch(person, person.getId(), persons),

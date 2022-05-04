@@ -1,12 +1,12 @@
 package ru.job4j.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import ru.job4j.chat.handler.Operation;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.Calendar;
 
 @Entity
@@ -14,11 +14,17 @@ import java.util.Calendar;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(value = 1, message = "Id must be more then 0",
+            groups = Operation.OnUpdate.class)
     private int id;
-    @Column(name = "text")
+
+    @Column(name = "text", nullable = false)
+    @NotBlank(message = "Message must be not empty", groups = {
+            Operation.OnCreate.class, Operation.OnUpdate.class
+    })
     private String text;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false, updatable = false)
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar date;

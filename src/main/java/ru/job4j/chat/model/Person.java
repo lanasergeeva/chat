@@ -2,8 +2,10 @@ package ru.job4j.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.job4j.chat.handler.Operation;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,9 +14,22 @@ import java.util.Set;
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(value = 1, message = "Id must be more then 0",
+            groups = Operation.OnUpdate.class)
     private int id;
+
+    @Size(min = 3, message = "Login must be more than 2 characters",
+            groups = {Operation.OnCreate.class, Operation.OnUpdate.class})
+    @NotBlank(message = "Login must be not empty", groups = {
+            Operation.OnCreate.class, Operation.OnUpdate.class})
     @Column(name = "login")
     private String login;
+
+    @Size(min = 5, max = 10,
+            message = "Password must be more than 4 and less then 11",
+            groups = {Operation.OnCreate.class, Operation.OnUpdate.class})
+    @NotBlank(message = "Password must be not empty", groups = {
+            Operation.OnCreate.class, Operation.OnUpdate.class})
     @Column(name = "password")
     private String password;
 
@@ -25,9 +40,6 @@ public class Person {
     @OneToMany(mappedBy = "person",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
-
-    public Person() {
-    }
 
     public static Person of(String login, String password) {
         Person person = new Person();

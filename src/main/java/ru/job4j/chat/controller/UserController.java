@@ -3,6 +3,8 @@ package ru.job4j.chat.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
+import ru.job4j.chat.handler.Operation;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.services.PersonServices;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +29,7 @@ public class UserController {
      * @return ResponseEntity<Person>
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<Person> signUp(@RequestBody Person person) {
-        users.check(person);
+    public ResponseEntity<Person> signUp(@Validated(Operation.OnCreate.class) @RequestBody Person person) {
         person.setPassword(encoder.encode(person.getPassword()));
         return new ResponseEntity<>(
                 this.users.save(person),

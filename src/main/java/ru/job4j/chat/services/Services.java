@@ -18,6 +18,8 @@ public interface Services<T> {
 
     void delete(int id);
 
+    void check(T t);
+
     default T patch(T model, int id, Services<T> services) throws Throwable {
         var current = services.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

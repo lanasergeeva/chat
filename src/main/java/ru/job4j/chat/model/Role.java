@@ -2,12 +2,12 @@ package ru.job4j.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import ru.job4j.chat.handler.Operation;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,9 +16,17 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull(message = "Id must be than 0", groups = {
+            Operation.OnUpdate.class})
     private int id;
+
     @Column(name = "name")
+    @NotBlank(message = "Name of role must be not empty", groups = {
+            Operation.OnCreate.class, Operation.OnUpdate.class})
+    @Size(min = 5, message = "Name of role must be more than 5 characters",
+            groups = {Operation.OnCreate.class, Operation.OnUpdate.class})
     private String name;
+
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY,
             orphanRemoval = true)
     private Set<Person> persons = new HashSet<>();

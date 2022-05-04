@@ -2,8 +2,10 @@ package ru.job4j.chat.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.chat.handler.Operation;
 import ru.job4j.chat.model.Role;
 import ru.job4j.chat.services.RoleServices;
 
@@ -33,8 +35,8 @@ public class RoleController {
     }
 
     @PostMapping("/role")
-    public ResponseEntity<Role> create(@RequestBody Role role) {
-        roles.checkData(role);
+    public ResponseEntity<Role> create(@Validated(Operation.OnCreate.class)
+                                           @RequestBody Role role) {
         return new ResponseEntity<>(
                 this.roles.save(role),
                 HttpStatus.CREATED
@@ -42,8 +44,8 @@ public class RoleController {
     }
 
     @PutMapping("/role")
-    public ResponseEntity<Void> update(@RequestBody Role role) {
-        roles.checkData(role);
+    public ResponseEntity<Void> update(@Validated(Operation.OnUpdate.class)
+                                           @RequestBody Role role) {
         this.roles.save(role);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +61,8 @@ public class RoleController {
     }
 
     @PatchMapping("/role")
-    public ResponseEntity<Role> patch(@RequestBody Role role)
+    public ResponseEntity<Role> patch(@Validated(Operation.OnUpdate.class)
+                                      @RequestBody Role role)
             throws Throwable {
         return new ResponseEntity<>(
                 roles.patch(role, role.getId(), roles),

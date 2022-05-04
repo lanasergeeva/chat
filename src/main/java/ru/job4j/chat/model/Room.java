@@ -2,8 +2,12 @@ package ru.job4j.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.job4j.chat.handler.Operation;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,9 +16,15 @@ import java.util.Set;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(value = 1, message = "Id must be more then 0",
+            groups = Operation.OnUpdate.class)
     private int id;
+
     @Column(name = "name")
+    @NotBlank(message = "Name of room must be not empty", groups = {
+            Operation.OnCreate.class, Operation.OnUpdate.class})
     private String name;
+
     @OneToMany(mappedBy = "room",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
